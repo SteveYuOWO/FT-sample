@@ -59,7 +59,7 @@ impl Contract {
     }
 
     #[init]
-    pub fn new_steve_token() -> Self {
+    pub fn new_token() -> Self {
         let metadata = FungibleTokenMetadata {
             spec: FT_METADATA_SPEC.to_string(),
             name: "Steve Token".to_string(),
@@ -79,17 +79,6 @@ impl Contract {
         this
     }
 
-    pub fn claim(&mut self) {
-        self.token.internal_register_account(&env::predecessor_account_id());
-        self.token.internal_transfer(
-            &self.master,
-            &env::predecessor_account_id(),
-            1000,
-            None,
-        );
-        log!("claim 1000 STEVE token to {}", env::predecessor_account_id());
-    }
-
     pub fn get_balance(&mut self) -> Balance {
         self.token.internal_unwrap_balance_of(&env::predecessor_account_id())
     }
@@ -100,27 +89,7 @@ impl Contract {
           &receiver_id, 
           amount, 
           None);
-        log!("transfer {} STEVE from {} to {}", amount, env::predecessor_account_id(), receiver_id);
-    }
-
-    pub fn win(&mut self) -> String {
-      self.token.internal_transfer(
-        &self.master, 
-        &env::predecessor_account_id(), 
-        10, 
-        None);
-      log!("transfer {} STEVE from {} to {}", 10, &self.master, &env::predecessor_account_id());
-      return "Win".to_string();
-    } 
-
-    pub fn lose(&mut self) -> String {
-      self.token.internal_transfer(
-          &env::predecessor_account_id(), 
-          &self.master, 
-          10, 
-          None);
-      log!("transfer {} STEVE from {} to {}", 10, &env::predecessor_account_id(), &self.master);
-      return "Lose".to_string();
+        log!("transfer {} from {} to {}", amount, env::predecessor_account_id(), receiver_id);
     }
 
     fn on_account_closed(&mut self, account_id: AccountId, balance: Balance) {
